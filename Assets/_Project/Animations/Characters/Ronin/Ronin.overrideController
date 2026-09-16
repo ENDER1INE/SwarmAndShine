@@ -1,0 +1,17 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!221 &22100000
+AnimatorOverrideController:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: Ronin
+  m_Controller: {fileID: 9100000, guid: 1229b45f5bf5163468ec7dc5eb34a5a6, type: 2}
+  m_Clips:
+  - m_OriginalClip: {fileID: 7400000, guid: 92893ab9aea5d5749844655bfde39a87, type: 2}
+    m_OverrideClip: {fileID: 7400000, guid: 209607a3014418e4898255186b47e8ac, type: 2}
+  - m_OriginalClip: {fileID: 7400000, guid: 48c1e9aac0fdf754097650b0d9ef1472, type: 2}
+    m_OverrideClip: {fileID: 7400000, guid: 08b54279932d9d64ca82abe38009b084, type: 2}
+  - m_OriginalClip: {fileID: 7400000, guid: cf1a2dba08e76cf4c974b755520f18b4, type: 2}
+    m_OverrideClip: {fileID: 7400000, guid: 44d1fe22a43574941b0bd2bd0658bd44, type: 2}

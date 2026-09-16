@@ -1,4 +1,5 @@
 using Game.Combat;
+using Game.Core;
 using UnityEngine;
 
 namespace Game.Player
@@ -7,6 +8,7 @@ namespace Game.Player
     public class PlayerMovement : MonoBehaviour
     {
         private Rigidbody2D _rigidbody;
+        private CharacterAnimator _animator;
         private CharacterStats _stats;
         private IMovementInputSource _inputSource;
         private bool _isInitialized;
@@ -14,6 +16,7 @@ namespace Game.Player
         private void Awake()
         {
             _rigidbody = GetComponent<Rigidbody2D>();
+            _animator = GetComponentInChildren<CharacterAnimator>();
         }
 
         public void Init(CharacterStats stats, IMovementInputSource inputSource)
@@ -32,6 +35,12 @@ namespace Game.Player
 
             Vector2 movementInput = _inputSource.GetMovementInput();
             _rigidbody.linearVelocity = movementInput * _stats.MoveSpeed;
+
+            _animator?.SetMoving(movementInput.sqrMagnitude > 0.0001f);
+            if (movementInput.x != 0f)
+            {
+                _animator?.SetFacing(movementInput.x);
+            }
         }
     }
 }

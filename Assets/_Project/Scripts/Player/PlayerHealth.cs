@@ -4,7 +4,7 @@ using Game.Core;
 
 namespace Game.Player
 {
-    public class PlayerHealth
+    public class PlayerHealth : IDamageable
     {
         private readonly CharacterStats _stats;
         private float _currentHealth;

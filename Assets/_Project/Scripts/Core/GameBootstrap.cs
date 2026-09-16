@@ -1,6 +1,6 @@
 using Game.Combat;
-using Game.Enemies;
 using Game.Player;
+using Game.Spawning;
 using UnityEngine;
 
 namespace Game.Core
@@ -12,7 +12,8 @@ namespace Game.Core
         [SerializeField] private PlayerWeaponController _playerWeaponController;
         [SerializeField] private ProjectileSpawner _projectileSpawner;
         [SerializeField] private WeaponData _testWeaponData;
-        [SerializeField] private EnemyController[] _sceneEnemies;
+        [SerializeField] private EnemySpawner _enemySpawner;
+        [SerializeField] private WaveConfig _testWaveConfig;
 
         private CharacterStats _characterStats;
         private PlayerHealth _playerHealth;
@@ -28,10 +29,8 @@ namespace Game.Core
             IMovementInputSource movementInputSource = new KeyboardMovementInputSource();
             _playerMovement.Init(_characterStats, movementInputSource);
 
-            foreach (var enemy in _sceneEnemies)
-            {
-                enemy.Init(_combatTargetRegistry);
-            }
+            _enemySpawner.Init(_combatTargetRegistry, () => _playerMovement.transform.position, _playerHealth);
+            _enemySpawner.StartWave(_testWaveConfig);
 
             ITargetProvider targetProvider = new RegistryTargetProvider(_combatTargetRegistry);
             var weaponFactory = new WeaponBehaviorFactory(

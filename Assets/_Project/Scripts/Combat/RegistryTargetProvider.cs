@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace Game.Combat
@@ -32,6 +33,20 @@ namespace Game.Combat
             }
 
             return nearest;
+        }
+
+        public void FindTargetsInRange(Vector2 fromPosition, float maxRange, List<ICombatTarget> results)
+        {
+            results.Clear();
+            float maxDistanceSquared = maxRange * maxRange;
+
+            foreach (var target in _registry.ActiveTargets)
+            {
+                if (target.IsAlive && (target.Position - fromPosition).sqrMagnitude <= maxDistanceSquared)
+                {
+                    results.Add(target);
+                }
+            }
         }
     }
 }

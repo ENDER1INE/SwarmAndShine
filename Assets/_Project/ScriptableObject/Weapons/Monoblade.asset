@@ -1,0 +1,31 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d99e44612561e4d44b23bb9454f6e5b7, type: 3}
+  m_Name: Monoblade
+  m_EditorClassIdentifier: 
+  _weaponName: Monoblade
+  _category: 0
+  _attackPattern: 0
+  _baseDamage: 12
+  _baseAttacksPerSecond: 1.4
+  _range: 1.4
+  _duplicateDamageBonusPercent: 0.2
+  _duplicateAttackSpeedBonusPercent: 0.1
+  _meleeHitWidth: 0.5
+  _meleeAttackDuration: 0.22
+  _meleeSwingArcDegrees: 110
+  _worldSprite: {fileID: 21300000, guid: b217d2c6a655ed24cad924bdf356746d, type: 3}
+  _worldScale: {x: 0.28, y: 0.28}
+  _worldTint: {r: 1, g: 1, b: 1, a: 1}
+  _worldSpriteRotationDegrees: -90
+  _worldSpriteOffset: {x: 0.65, y: 0}
+  _muzzleOffset: {x: 0, y: 0}

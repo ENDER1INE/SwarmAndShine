@@ -1,0 +1,35 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 83832bd230dbafa4ba5469e502277ab3, type: 3}
+  m_Name: TestShopConfig
+  m_EditorClassIdentifier: 
+  _slotCount: 4
+  _rerollBaseCost: 5
+  _rerollCostIncrement: 3
+  _items:
+  - {fileID: 11400000, guid: 88134b98e21b482498f6306a25bbe94e, type: 2}
+  - {fileID: 11400000, guid: c0df4684dcd89544da23de8143aac81f, type: 2}
+  - {fileID: 11400000, guid: af878d1204422604683ea07f553d33c6, type: 2}
+  - {fileID: 11400000, guid: 16cd417326bc099468780a3c9fda6021, type: 2}
+  - {fileID: 11400000, guid: c800208974e48c34d9d9431639955e98, type: 2}
+  - {fileID: 11400000, guid: 43c1a6f75b60d5a469538137fa06a676, type: 2}
+  - {fileID: 11400000, guid: 17c623cf191f4304ea845209faea8718, type: 2}
+  _rarityPool:
+  - _rarity: 0
+    _firstWaveIndex: 0
+    _weight: 100
+  - _rarity: 1
+    _firstWaveIndex: 1
+    _weight: 40
+  - _rarity: 2
+    _firstWaveIndex: 3
+    _weight: 15

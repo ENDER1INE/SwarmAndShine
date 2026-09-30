@@ -8,14 +8,18 @@ namespace Game.Player
     {
         private readonly CharacterStats _stats;
         private float _currentHealth;
+        private float _lastKnownMaxHealth;
 
         public PlayerHealth(CharacterStats stats)
         {
             _stats = stats;
             _currentHealth = _stats.MaxHealth;
+            _lastKnownMaxHealth = _stats.MaxHealth;
+            _stats.StatsChanged += OnStatsChanged;
         }
 
         public float CurrentHealth => _currentHealth;
+        public float MaxHealth => _stats.MaxHealth;
         public bool IsDead => _currentHealth <= 0f;
 
         public void TakeDamage(float rawDamage)
@@ -34,6 +38,7 @@ namespace Game.Player
             _currentHealth = Math.Max(0f, _currentHealth - mitigatedDamage);
 
             GameEvents.Publish(new PlayerDamagedEvent(mitigatedDamage, _currentHealth));
+            PublishHealthChanged();
 
             if (IsDead)
             {
@@ -48,7 +53,12 @@ namespace Game.Player
                 return;
             }
 
+            float previousHealth = _currentHealth;
             _currentHealth = Math.Min(_currentHealth + amount, _stats.MaxHealth);
+            if (_currentHealth != previousHealth)
+            {
+                PublishHealthChanged();
+            }
         }
 
         public void Tick(float deltaTime)
@@ -59,6 +69,26 @@ namespace Game.Player
             }
 
             Heal(_stats.HealthRegen * deltaTime);
+        }
+
+        private void OnStatsChanged()
+        {
+            float maxHealth = _stats.MaxHealth;
+            float maxHealthDelta = maxHealth - _lastKnownMaxHealth;
+            _lastKnownMaxHealth = maxHealth;
+
+            if (IsDead || maxHealthDelta == 0f)
+            {
+                return;
+            }
+
+            _currentHealth = Math.Min(_currentHealth + Math.Max(0f, maxHealthDelta), maxHealth);
+            PublishHealthChanged();
+        }
+
+        private void PublishHealthChanged()
+        {
+            GameEvents.Publish(new PlayerHealthChangedEvent(_currentHealth, _stats.MaxHealth));
         }
     }
 }

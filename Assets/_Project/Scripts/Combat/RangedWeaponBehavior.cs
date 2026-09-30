@@ -1,4 +1,3 @@
-using System;
 using UnityEngine;
 
 namespace Game.Combat
@@ -9,7 +8,7 @@ namespace Game.Combat
         private readonly CharacterStats _stats;
         private readonly ITargetProvider _targetProvider;
         private readonly IProjectileSpawner _projectileSpawner;
-        private readonly Func<Vector2> _originProvider;
+        private readonly IWeaponMount _mount;
 
         private float _cooldownTimer;
         private int _stackCount = 1;
@@ -19,13 +18,13 @@ namespace Game.Combat
             CharacterStats stats,
             ITargetProvider targetProvider,
             IProjectileSpawner projectileSpawner,
-            Func<Vector2> originProvider)
+            IWeaponMount mount)
         {
             _weaponData = weaponData;
             _stats = stats;
             _targetProvider = targetProvider;
             _projectileSpawner = projectileSpawner;
-            _originProvider = originProvider;
+            _mount = mount;
         }
 
         public WeaponData WeaponData => _weaponData;
@@ -39,44 +38,26 @@ namespace Game.Combat
         public void Tick(float deltaTime)
         {
             _cooldownTimer -= deltaTime;
+
+            ICombatTarget target = _targetProvider.FindNearestTarget(_mount.Position, _weaponData.Range);
+            if (target == null || !target.IsAlive)
+            {
+                _mount.ClearAim();
+                return;
+            }
+
+            _mount.AimAt((target.Position - _mount.Position).normalized);
             if (_cooldownTimer > 0f)
             {
                 return;
             }
 
-            Vector2 origin = _originProvider();
-            ICombatTarget target = _targetProvider.FindNearestTarget(origin, _weaponData.Range);
-            if (target == null || !target.IsAlive)
-            {
-                return;
-            }
+            Vector2 muzzlePosition = _mount.MuzzlePosition;
+            Vector2 shotDirection = (target.Position - muzzlePosition).normalized;
+            float damage = WeaponStatCalculator.CalculateDamage(_weaponData, _stats, _stackCount);
+            _projectileSpawner.SpawnProjectile(muzzlePosition, shotDirection, damage, target);
 
-            float finalDamage = CalculateDamage();
-            Vector2 direction = (target.Position - origin).normalized;
-            _projectileSpawner.SpawnProjectile(origin, direction, finalDamage, target);
-
-            ResetCooldown();
-        }
-
-        private float CalculateDamage()
-        {
-            float damagePercent = _weaponData.Category == WeaponCategory.Melee
-                ? _stats.MeleeDamagePercent
-                : _stats.RangedDamagePercent;
-
-            float duplicateBonus = _weaponData.DuplicateDamageBonusPercent * (_stackCount - 1);
-
-            return _weaponData.BaseDamage * (1f + damagePercent) * (1f + duplicateBonus);
-        }
-
-        private void ResetCooldown()
-        {
-            float duplicateAttackSpeedBonus = _weaponData.DuplicateAttackSpeedBonusPercent * (_stackCount - 1);
-            float effectiveAttacksPerSecond = _weaponData.BaseAttacksPerSecond
-                * (1f + _stats.AttackSpeedPercent)
-                * (1f + duplicateAttackSpeedBonus);
-
-            _cooldownTimer = 1f / effectiveAttacksPerSecond;
+            _cooldownTimer = WeaponStatCalculator.CalculateCooldown(_weaponData, _stats, _stackCount);
         }
     }
 }

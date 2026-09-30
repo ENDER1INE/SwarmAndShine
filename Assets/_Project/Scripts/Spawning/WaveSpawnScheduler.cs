@@ -46,6 +46,11 @@ namespace Game.Spawning
             }
         }
 
+        public void Clear()
+        {
+            _entryStates.Clear();
+        }
+
         public void Tick(float deltaTime, Action<EnemyData> onSpawnRequested)
         {
             foreach (var state in _entryStates)

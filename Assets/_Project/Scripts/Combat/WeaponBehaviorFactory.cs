@@ -1,5 +1,4 @@
 using System;
-using UnityEngine;
 
 namespace Game.Combat
 {
@@ -8,18 +7,18 @@ namespace Game.Combat
         private readonly CharacterStats _stats;
         private readonly ITargetProvider _targetProvider;
         private readonly IProjectileSpawner _projectileSpawner;
-        private readonly Func<Vector2> _originProvider;
+        private readonly IWeaponMountFactory _mountFactory;
 
         public WeaponBehaviorFactory(
             CharacterStats stats,
             ITargetProvider targetProvider,
             IProjectileSpawner projectileSpawner,
-            Func<Vector2> originProvider)
+            IWeaponMountFactory mountFactory)
         {
             _stats = stats;
             _targetProvider = targetProvider;
             _projectileSpawner = projectileSpawner;
-            _originProvider = originProvider;
+            _mountFactory = mountFactory;
         }
 
         public IWeaponBehavior Create(WeaponData weaponData)
@@ -27,7 +26,24 @@ namespace Game.Combat
             switch (weaponData.AttackPattern)
             {
                 case AttackPatternType.RangedProjectile:
-                    return new RangedWeaponBehavior(weaponData, _stats, _targetProvider, _projectileSpawner, _originProvider);
+                    return new RangedWeaponBehavior(
+                        weaponData,
+                        _stats,
+                        _targetProvider,
+                        _projectileSpawner,
+                        _mountFactory.Create(weaponData));
+                case AttackPatternType.MeleeSwing:
+                    return new MeleeSwingBehavior(
+                        weaponData,
+                        _stats,
+                        _targetProvider,
+                        _mountFactory.Create(weaponData));
+                case AttackPatternType.MeleeThrust:
+                    return new MeleeThrustBehavior(
+                        weaponData,
+                        _stats,
+                        _targetProvider,
+                        _mountFactory.Create(weaponData));
                 default:
                     throw new NotSupportedException(
                         $"Attack pattern '{weaponData.AttackPattern}' is not implemented yet.");

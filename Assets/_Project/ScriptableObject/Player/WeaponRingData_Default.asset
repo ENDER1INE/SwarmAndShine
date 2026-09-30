@@ -1,0 +1,17 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fb656bad496fd95489f73f5a7b328b69, type: 3}
+  m_Name: WeaponRingData_Default
+  m_EditorClassIdentifier: 
+  _centerOffset: {x: 0, y: 0.6}
+  _radius: 0.9
+  _startAngleDegrees: 0

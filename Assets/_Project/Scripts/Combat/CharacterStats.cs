@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 
 namespace Game.Combat
@@ -31,16 +32,20 @@ namespace Game.Combat
         public float AttackSpeedPercent => _finalValues[StatType.AttackSpeedPercent];
         public float Luck => _finalValues[StatType.Luck];
 
+        public event Action StatsChanged;
+
         public void AddModifier(StatModifier modifier)
         {
             _modifiers.Add(modifier);
             Recalculate();
+            StatsChanged?.Invoke();
         }
 
         public void RemoveModifiersFromSource(object source)
         {
             _modifiers.RemoveAll(modifier => ReferenceEquals(modifier.Source, source));
             Recalculate();
+            StatsChanged?.Invoke();
         }
 
         public float GetStat(StatType statType) => _finalValues[statType];

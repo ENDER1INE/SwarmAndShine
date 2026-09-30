@@ -17,6 +17,11 @@ namespace Game.Combat
         public IReadOnlyList<IWeaponBehavior> ActiveWeapons => _activeWeapons;
         public bool IsFull => _activeWeapons.Count >= MaxSlots;
 
+        public bool CanAddWeapon(WeaponData weaponData)
+        {
+            return !IsFull || FindByWeaponData(weaponData) != null;
+        }
+
         public bool TryAddWeapon(WeaponData weaponData)
         {
             IWeaponBehavior existing = FindByWeaponData(weaponData);

@@ -15,5 +15,5 @@ MonoBehaviour:
   _duration: 30
   _spawnEntries:
   - _enemyData: {fileID: 11400000, guid: d62026340dfffd443ab5e831533f3a0c, type: 2}
-    _count: 5
-    _spawnInterval: 1.5
+    _count: 40
+    _spawnInterval: 0.7

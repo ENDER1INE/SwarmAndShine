@@ -1,0 +1,26 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9ead3776a192a1248902faf26b493130, type: 3}
+  m_Name: RunConfig_Default
+  m_EditorClassIdentifier: 
+  _waves:
+  - {fileID: 11400000, guid: c684ab2c86795094093ce64ef100832c, type: 2}
+  - {fileID: 11400000, guid: c7ca7657694fe494a91ef7353f3e41cc, type: 2}
+  - {fileID: 11400000, guid: 4b3f276f3970c4d4ab434bdf4e420fc5, type: 2}
+  - {fileID: 11400000, guid: 8b0093697e3f84742a5ab1ae56ff2fe3, type: 2}
+  - {fileID: 11400000, guid: d2a5f689c07995643b6bef36aac98acd, type: 2}
+  - {fileID: 11400000, guid: 32832891b2cef8e47880cb6f5c1b21a1, type: 2}
+  - {fileID: 11400000, guid: f15c47eb03250854bad5443b7e8084e9, type: 2}
+  - {fileID: 11400000, guid: 0591cb509b13b4246a3b1315f079ab3e, type: 2}
+  - {fileID: 11400000, guid: fbc1b941ef0c2334cb04e9d497ae0cbc, type: 2}
+  - {fileID: 11400000, guid: 7ad641781b05fc745988484ec6fff682, type: 2}
+  _defeatFallbackDelay: 2

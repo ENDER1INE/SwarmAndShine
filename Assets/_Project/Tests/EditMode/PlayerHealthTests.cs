@@ -83,6 +83,52 @@ namespace Game.Tests.EditMode
         }
 
         [Test]
+        public void MaxHealthIncrease_RaisesCurrentHealthByTheSameAmount()
+        {
+            var stats = CreateStats(maxHealth: 100f, armor: 0f);
+            var health = new PlayerHealth(stats);
+            health.TakeDamage(40f);
+
+            stats.AddModifier(new StatModifier(StatType.MaxHealth, ModifierType.Flat, 20f));
+
+            Assert.AreEqual(80f, health.CurrentHealth, 0.0001f);
+            Assert.AreEqual(120f, health.MaxHealth, 0.0001f);
+        }
+
+        [Test]
+        public void MaxHealthDecrease_ClampsCurrentHealth()
+        {
+            var stats = CreateStats(maxHealth: 100f, armor: 0f);
+            var health = new PlayerHealth(stats);
+
+            stats.AddModifier(new StatModifier(StatType.MaxHealth, ModifierType.Flat, -30f));
+
+            Assert.AreEqual(70f, health.CurrentHealth, 0.0001f);
+        }
+
+        [Test]
+        public void TakeDamage_PublishesHealthChangedEvent()
+        {
+            var stats = CreateStats(maxHealth: 100f, armor: 0f);
+            var health = new PlayerHealth(stats);
+            PlayerHealthChangedEvent? received = null;
+            void OnChanged(PlayerHealthChangedEvent evt) => received = evt;
+            GameEvents.Subscribe<PlayerHealthChangedEvent>(OnChanged);
+
+            try
+            {
+                health.TakeDamage(25f);
+
+                Assert.AreEqual(75f, received.Value.CurrentHealth, 0.0001f);
+                Assert.AreEqual(100f, received.Value.MaxHealth, 0.0001f);
+            }
+            finally
+            {
+                GameEvents.Unsubscribe<PlayerHealthChangedEvent>(OnChanged);
+            }
+        }
+
+        [Test]
         public void Tick_AppliesHealthRegenOverTime()
         {
             var stats = CreateStats(maxHealth: 100f, armor: 0f, healthRegen: 10f);

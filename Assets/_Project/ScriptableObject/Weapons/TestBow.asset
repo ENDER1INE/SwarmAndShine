@@ -18,3 +18,9 @@ MonoBehaviour:
   _baseDamage: 10
   _baseAttacksPerSecond: 1.5
   _range: 6
+  _duplicateDamageBonusPercent: 0.2
+  _duplicateAttackSpeedBonusPercent: 0.1
+  _worldSprite: {fileID: 21300000, guid: 04eda1cf45c4803499710dfff0cee59e, type: 3}
+  _worldScale: {x: 0.6, y: 0.14}
+  _worldTint: {r: 0.3, g: 0.85, b: 1, a: 1}
+  _muzzleOffset: {x: 0.3, y: 0}

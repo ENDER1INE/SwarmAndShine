@@ -58,5 +58,34 @@ namespace Game.Tests.EditMode
 
             Assert.AreSame(alive, result);
         }
+
+        [Test]
+        public void FindTargetsInRange_ReturnsOnlyAliveTargetsWithinRange()
+        {
+            var registry = new CombatTargetRegistry();
+            var inRange = new FakeCombatTarget { Position = new Vector2(2f, 0f) };
+            var outOfRange = new FakeCombatTarget { Position = new Vector2(20f, 0f) };
+            var dead = new FakeCombatTarget { Position = new Vector2(1f, 0f), IsAlive = false };
+            registry.Register(inRange);
+            registry.Register(outOfRange);
+            registry.Register(dead);
+            var results = new System.Collections.Generic.List<ICombatTarget>();
+
+            new RegistryTargetProvider(registry).FindTargetsInRange(Vector2.zero, 5f, results);
+
+            Assert.AreEqual(1, results.Count);
+            Assert.AreSame(inRange, results[0]);
+        }
+
+        [Test]
+        public void FindTargetsInRange_ClearsPreviousResults()
+        {
+            var registry = new CombatTargetRegistry();
+            var results = new System.Collections.Generic.List<ICombatTarget> { new FakeCombatTarget() };
+
+            new RegistryTargetProvider(registry).FindTargetsInRange(Vector2.zero, 5f, results);
+
+            Assert.AreEqual(0, results.Count);
+        }
     }
 }

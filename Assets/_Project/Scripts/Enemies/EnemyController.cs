@@ -77,8 +77,20 @@ namespace Game.Enemies
             {
                 _currentHealth = 0f;
                 _registry.Unregister(this);
+                GameEvents.Publish(new EnemyKilledEvent(_enemyData.CurrencyReward, Position));
                 BeginDeath();
             }
+        }
+
+        public void Despawn()
+        {
+            if (IsAlive)
+            {
+                _registry.Unregister(this);
+            }
+
+            _isDying = false;
+            _releaseToPool?.Invoke(this);
         }
 
         private void BeginDeath()

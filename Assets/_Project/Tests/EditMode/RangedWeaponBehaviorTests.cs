@@ -22,17 +22,58 @@ namespace Game.Tests.EditMode
             public ICombatTarget TargetToReturn;
 
             public ICombatTarget FindNearestTarget(Vector2 fromPosition, float maxRange) => TargetToReturn;
+
+            public void FindTargetsInRange(Vector2 fromPosition, float maxRange, System.Collections.Generic.List<ICombatTarget> results)
+            {
+                results.Clear();
+                if (TargetToReturn != null)
+                {
+                    results.Add(TargetToReturn);
+                }
+            }
         }
 
         private class FakeProjectileSpawner : IProjectileSpawner
         {
             public int SpawnCount;
             public float LastDamage;
+            public Vector2 LastOrigin;
+            public Vector2 LastDirection;
 
             public void SpawnProjectile(Vector2 origin, Vector2 direction, float damage, ICombatTarget target)
             {
                 SpawnCount++;
                 LastDamage = damage;
+                LastOrigin = origin;
+                LastDirection = direction;
+            }
+        }
+
+        private class FakeWeaponMount : IWeaponMount
+        {
+            public Vector2 Position { get; set; } = Vector2.zero;
+            public Vector2 MuzzlePosition { get; set; } = Vector2.zero;
+            public Vector2 LastAimDirection;
+            public int AimCount;
+            public int ClearAimCount;
+
+            public void AimAt(Vector2 direction)
+            {
+                AimCount++;
+                LastAimDirection = direction;
+            }
+
+            public void ClearAim()
+            {
+                ClearAimCount++;
+            }
+
+            public void PlayThrust(float distance, float duration)
+            {
+            }
+
+            public void PlaySwing(float startOffsetDegrees, float endOffsetDegrees, float duration)
+            {
             }
         }
 
@@ -65,11 +106,61 @@ namespace Game.Tests.EditMode
             var stats = CreateStats();
             var targetProvider = new FakeTargetProvider { TargetToReturn = null };
             var spawner = new FakeProjectileSpawner();
-            var weapon = new RangedWeaponBehavior(weaponData, stats, targetProvider, spawner, () => Vector2.zero);
+            var weapon = new RangedWeaponBehavior(weaponData, stats, targetProvider, spawner, new FakeWeaponMount());
 
             weapon.Tick(1f);
 
             Assert.AreEqual(0, spawner.SpawnCount);
+        }
+
+        [Test]
+        public void Tick_NoTargetInRange_ClearsAim()
+        {
+            var weaponData = CreateWeaponData(WeaponCategory.Ranged, 10f, 1f, 5f);
+            var mount = new FakeWeaponMount();
+            var weapon = new RangedWeaponBehavior(
+                weaponData, CreateStats(), new FakeTargetProvider(), new FakeProjectileSpawner(), mount);
+
+            weapon.Tick(0.1f);
+
+            Assert.AreEqual(1, mount.ClearAimCount);
+            Assert.AreEqual(0, mount.AimCount);
+        }
+
+        [Test]
+        public void Tick_TargetInRange_AimsMountTowardTargetEvenDuringCooldown()
+        {
+            var weaponData = CreateWeaponData(WeaponCategory.Ranged, 10f, 1f, 5f);
+            var mount = new FakeWeaponMount();
+            var target = new FakeCombatTarget { Position = new Vector2(0f, 3f) };
+            var weapon = new RangedWeaponBehavior(
+                weaponData,
+                CreateStats(),
+                new FakeTargetProvider { TargetToReturn = target },
+                new FakeProjectileSpawner(),
+                mount);
+
+            weapon.Tick(0f);
+            weapon.Tick(0.1f);
+
+            Assert.AreEqual(2, mount.AimCount);
+            Assert.AreEqual(Vector2.up, mount.LastAimDirection);
+        }
+
+        [Test]
+        public void Tick_TargetInRange_FiresFromMuzzleTowardTarget()
+        {
+            var weaponData = CreateWeaponData(WeaponCategory.Ranged, 10f, 1f, 5f);
+            var mount = new FakeWeaponMount { Position = Vector2.zero, MuzzlePosition = new Vector2(1f, 0f) };
+            var target = new FakeCombatTarget { Position = new Vector2(1f, 4f) };
+            var spawner = new FakeProjectileSpawner();
+            var weapon = new RangedWeaponBehavior(
+                weaponData, CreateStats(), new FakeTargetProvider { TargetToReturn = target }, spawner, mount);
+
+            weapon.Tick(0f);
+
+            Assert.AreEqual(new Vector2(1f, 0f), spawner.LastOrigin);
+            Assert.AreEqual(Vector2.up, spawner.LastDirection);
         }
 
         [Test]
@@ -81,7 +172,7 @@ namespace Game.Tests.EditMode
             var target = new FakeCombatTarget { Position = new Vector2(1f, 0f) };
             var targetProvider = new FakeTargetProvider { TargetToReturn = target };
             var spawner = new FakeProjectileSpawner();
-            var weapon = new RangedWeaponBehavior(weaponData, stats, targetProvider, spawner, () => Vector2.zero);
+            var weapon = new RangedWeaponBehavior(weaponData, stats, targetProvider, spawner, new FakeWeaponMount());
 
             weapon.Tick(0f);
 
@@ -97,7 +188,7 @@ namespace Game.Tests.EditMode
             var target = new FakeCombatTarget { Position = new Vector2(1f, 0f) };
             var targetProvider = new FakeTargetProvider { TargetToReturn = target };
             var spawner = new FakeProjectileSpawner();
-            var weapon = new RangedWeaponBehavior(weaponData, stats, targetProvider, spawner, () => Vector2.zero);
+            var weapon = new RangedWeaponBehavior(weaponData, stats, targetProvider, spawner, new FakeWeaponMount());
 
             weapon.Tick(0f);
             weapon.Tick(0.1f); // кулдаун при 1 атаке/сек = 1с, ещё не прошёл

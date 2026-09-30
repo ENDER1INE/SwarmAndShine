@@ -1,0 +1,30 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d99e44612561e4d44b23bb9454f6e5b7, type: 3}
+  m_Name: Pistol
+  m_EditorClassIdentifier: 
+  _weaponName: Pistol
+  _category: 1
+  _attackPattern: 1
+  _baseDamage: 4
+  _baseAttacksPerSecond: 3
+  _range: 6
+  _duplicateDamageBonusPercent: 0.2
+  _duplicateAttackSpeedBonusPercent: 0.1
+  _meleeHitWidth: 0.6
+  _meleeThrustDuration: 0.16
+  _worldSprite: {fileID: 21300000, guid: 04eda1cf45c4803499710dfff0cee59e, type: 3}
+  _worldScale: {x: 0.35, y: 0.1}
+  _worldTint: {r: 1, g: 0.85, b: 0.2, a: 1}
+  _worldSpriteRotationDegrees: 0
+  _worldSpriteOffset: {x: 0, y: 0}
+  _muzzleOffset: {x: 0.18, y: 0}

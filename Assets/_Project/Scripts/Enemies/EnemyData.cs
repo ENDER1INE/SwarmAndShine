@@ -12,6 +12,9 @@ namespace Game.Enemies
         [SerializeField] private float _contactDamage = 5f;
         [SerializeField] private float _contactDamageInterval = 1f;
 
+        [SerializeField] private int _currencyReward = 1;
+
+        public int CurrencyReward => _currencyReward;
         public string EnemyName => _enemyName;
         public EnemyController Prefab => _prefab;
         public float MaxHealth => _maxHealth;

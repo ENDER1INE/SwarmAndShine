@@ -129,9 +129,9 @@ TextureImporter:
       name: idle_02_0
       rect:
         serializedVersion: 2
-        x: 0
-        y: 4
-        width: 511
+        x: 2
+        y: 0
+        width: 507
         height: 409
       alignment: 0
       pivot: {x: 0, y: 0}

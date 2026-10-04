@@ -129,10 +129,10 @@ TextureImporter:
       name: Walk_05_0
       rect:
         serializedVersion: 2
-        x: 0
-        y: 25
-        width: 498
-        height: 337
+        x: 8
+        y: 12
+        width: 514
+        height: 334
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}

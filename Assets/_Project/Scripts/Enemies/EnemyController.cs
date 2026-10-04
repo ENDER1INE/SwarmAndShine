@@ -58,7 +58,7 @@ namespace Game.Enemies
             Vector2 movement = _chaseBehavior.Tick(Time.deltaTime, Position, _targetPositionProvider());
             transform.Translate(movement, Space.World);
 
-            _animator?.SetMoving(movement.sqrMagnitude > 0.0001f);
+            _animator?.SetMoving(movement != Vector2.zero);
             if (movement.x != 0f)
             {
                 _animator?.SetFacing(movement.x);

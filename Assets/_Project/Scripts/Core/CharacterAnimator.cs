@@ -44,6 +44,7 @@ namespace Game.Core
         public void ResetToIdle()
         {
             _animator.Rebind();
+            _animator.ResetTrigger(DieHash);
             _animator.Update(0f);
         }
 

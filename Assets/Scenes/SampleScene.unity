@@ -5938,6 +5938,7 @@ MonoBehaviour:
   _enemySpawner: {fileID: 1330500814}
   _runConfig: {fileID: 11400000, guid: 141831ec14b29474992434a2ca83f7de, type: 2}
   _shopConfig: {fileID: 11400000, guid: 7fe6b372814d02a47b4f271685ef7f5b, type: 2}
+  _runRewardConfig: {fileID: 11400000, guid: f5b4a84dcabc0c04f8e08e3572c22ecc, type: 2}
   _shopView: {fileID: 958289908}
   _resultsView: {fileID: 78665191}
   _hudView: {fileID: 624871349}

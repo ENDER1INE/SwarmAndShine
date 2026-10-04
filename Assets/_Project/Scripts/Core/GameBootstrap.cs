@@ -1,5 +1,7 @@
 using Game.CameraControl;
+using System.IO;
 using Game.Combat;
+using Game.Meta;
 using Game.Player;
 using Game.Run;
 using Game.Shop;
@@ -14,6 +16,8 @@ namespace Game.Core
 {
     public class GameBootstrap : MonoBehaviour
     {
+        private const string SaveFileName = "save.json";
+
         [SerializeField] private CharacterBaseStatsData _characterBaseStatsData;
         [SerializeField] private PlayerMovement _playerMovement;
         [SerializeField] private PlayerWeaponController _playerWeaponController;
@@ -24,6 +28,7 @@ namespace Game.Core
         [SerializeField] private EnemySpawner _enemySpawner;
         [SerializeField] private RunConfig _runConfig;
         [SerializeField] private ShopConfig _shopConfig;
+        [SerializeField] private RunRewardConfig _runRewardConfig;
         [SerializeField] private ShopView _shopView;
         [SerializeField] private ResultsView _resultsView;
         [SerializeField] private HudView _hudView;
@@ -32,6 +37,9 @@ namespace Game.Core
         [SerializeField] private TiledFloorView _tiledFloorView;
         [SerializeField] private CameraRigController _cameraRig;
 
+        private SaveData _saveData;
+        private RunStatsTracker _runStatsTracker;
+        private RunRewardService _runRewardService;
         private CharacterStats _characterStats;
         private PlayerHealth _playerHealth;
         private CombatTargetRegistry _combatTargetRegistry;
@@ -45,10 +53,22 @@ namespace Game.Core
             _runWallet?.Dispose();
             _runFlow?.Dispose();
             _shopSession?.Dispose();
+            _runRewardService?.Dispose();
+            _runStatsTracker?.Dispose();
         }
 
         private void Awake()
         {
+            ISaveStorage saveStorage = new JsonFileSaveStorage(Path.Combine(Application.persistentDataPath, SaveFileName));
+            _saveData = saveStorage.Load();
+            _runStatsTracker = new RunStatsTracker();
+            _runRewardService = new RunRewardService(
+                new RunRewardCalculator(_runRewardConfig.ToRates()),
+                _runStatsTracker,
+                new MetaWallet(_saveData),
+                _saveData,
+                saveStorage);
+
             _runWallet = new RunWallet();
             _characterStats = new CharacterStats(_characterBaseStatsData);
             _playerHealth = new PlayerHealth(_characterStats);
@@ -106,6 +126,7 @@ namespace Game.Core
 
             if (_runFlow.IsWaveActive)
             {
+                _runStatsTracker.Tick(Time.deltaTime);
                 _playerHealth.Tick(Time.deltaTime);
             }
         }

@@ -1,25 +1,10 @@
 fileFormatVersion: 2
-guid: c6b7e5d168b0ad246a99d0040bb64433
+guid: 71b2ace11b473e948bf6a53f95d6cc08
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -7936744219955110205
-    second: char_ronin_idle_0
-  - first:
-      213: 8390875437904156373
-    second: char_ronin_idle_1
-  - first:
-      213: -6174824610517574794
-    second: char_ronin_idle_2
-  - first:
-      213: -8463672106859473743
-    second: char_ronin_idle_3
-  - first:
-      213: 5152459757715550300
-    second: char_ronin_idle_4
-  - first:
-      213: 2213294978388485501
-    second: char_ronin_idle_5
+      213: 8834997733563954343
+    second: Shotgun_02_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -141,133 +126,23 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: char_ronin_walk_0
+      name: Shotgun_02_0
       rect:
         serializedVersion: 2
-        x: 0
-        y: 0
-        width: 206
-        height: 202
-      alignment: 9
-      pivot: {x: 0.5, y: 0}
+        x: 3
+        y: 3
+        width: 419
+        height: 379
+      alignment: 0
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: 0
+      tessellationDetail: -1
       bones: []
-      spriteID: 0e730b6a1809eb84290ee05afac4b34b
-      internalID: 1135622748
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: char_ronin_walk_1
-      rect:
-        serializedVersion: 2
-        x: 206
-        y: 0
-        width: 206
-        height: 202
-      alignment: 9
-      pivot: {x: 0.5, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 0a8487efec5579645a99cf2da9d39e9e
-      internalID: 1005283597
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: char_ronin_walk_2
-      rect:
-        serializedVersion: 2
-        x: 412
-        y: 0
-        width: 206
-        height: 202
-      alignment: 9
-      pivot: {x: 0.5, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: f3d8ea1997278ff41ae6def156b1cd0d
-      internalID: -276821918
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: char_ronin_walk_3
-      rect:
-        serializedVersion: 2
-        x: 618
-        y: 0
-        width: 206
-        height: 202
-      alignment: 9
-      pivot: {x: 0.5, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: fa5eee8b7ed5b464ca3c24408e298da0
-      internalID: -680603184
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: char_ronin_walk_4
-      rect:
-        serializedVersion: 2
-        x: 824
-        y: 0
-        width: 206
-        height: 202
-      alignment: 9
-      pivot: {x: 0.5, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: f12fefc33a513f844aa830e519bd84a5
-      internalID: -1596474155
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: char_ronin_walk_5
-      rect:
-        serializedVersion: 2
-        x: 1030
-        y: 0
-        width: 206
-        height: 202
-      alignment: 9
-      pivot: {x: 0.5, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: d4eea03565d5e0f46b29cfafc17ea969
-      internalID: -1177654819
+      spriteID: 7a4f57cf0a73c9a70800000000000000
+      internalID: 8834997733563954343
       vertices: []
       indices: 
       edges: []
@@ -276,7 +151,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 0c68d18bf1309da43bb85a5c3831d934
+    spriteID: 
     internalID: 0
     vertices: []
     indices: 
@@ -286,12 +161,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      char_ronin_walk_0: 1135622748
-      char_ronin_walk_1: 1005283597
-      char_ronin_walk_2: -276821918
-      char_ronin_walk_3: -680603184
-      char_ronin_walk_4: -1596474155
-      char_ronin_walk_5: -1177654819
+      Shotgun_02_0: 8834997733563954343
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

@@ -19,15 +19,13 @@ namespace Game.Tests.EditMode
             }
 
             public WeaponData WeaponData { get; }
-            public int StackCount { get; private set; } = 1;
 
             public void Tick(float deltaTime)
             {
             }
 
-            public void AddStack()
+            public void Release()
             {
-                StackCount++;
             }
         }
 
@@ -165,6 +163,34 @@ namespace Game.Tests.EditMode
 
             Assert.AreEqual(PurchaseResult.WeaponSlotsFull, result);
             Assert.AreEqual(100, fixture.Wallet.Balance);
+        }
+
+        [Test]
+        public void CanBuy_WeaponWithFullSlots_ReturnsFalseUntilSlotFreed()
+        {
+            var fixture = CreateFixture(100, CreateItem(8, ScriptableObject.CreateInstance<WeaponData>()));
+            using var session = fixture.Session;
+            for (int i = 0; i < WeaponSlotManager.MaxSlots; i++)
+            {
+                fixture.WeaponSlots.TryAddWeapon(ScriptableObject.CreateInstance<WeaponData>());
+            }
+
+            OpenShop();
+            Assert.IsFalse(session.CanBuy(0));
+
+            fixture.WeaponSlots.TryRemoveWeaponAt(0);
+
+            Assert.IsTrue(session.CanBuy(0));
+        }
+
+        [Test]
+        public void CanBuy_NotEnoughCurrency_ReturnsFalse()
+        {
+            var fixture = CreateFixture(5, CreateItem(8));
+            using var session = fixture.Session;
+            OpenShop();
+
+            Assert.IsFalse(session.CanBuy(0));
         }
 
         [Test]

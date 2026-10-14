@@ -41,6 +41,18 @@ namespace Game.Shop
             GameEvents.Subscribe<ShopOpenedEvent>(OnShopOpened);
         }
 
+        public bool CanBuy(int slotIndex)
+        {
+            ShopSlot slot = _slots[slotIndex];
+            if (slot.IsEmpty)
+            {
+                return false;
+            }
+
+            bool isBlockedByFullSlots = slot.Item.Weapon != null && _weaponSlots.IsFull;
+            return !isBlockedByFullSlots && _wallet.Balance >= slot.Item.Price;
+        }
+
         public PurchaseResult TryBuy(int slotIndex)
         {
             ShopSlot slot = _slots[slotIndex];
@@ -50,7 +62,7 @@ namespace Game.Shop
             }
 
             ShopItemData item = slot.Item;
-            if (item.Weapon != null && !_weaponSlots.CanAddWeapon(item.Weapon))
+            if (item.Weapon != null && _weaponSlots.IsFull)
             {
                 return PurchaseResult.WeaponSlotsFull;
             }

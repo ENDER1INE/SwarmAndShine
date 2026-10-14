@@ -23,7 +23,7 @@ namespace Game.UI
             _lockButton.onClick.AddListener(() => onLockClicked(slotIndex));
         }
 
-        public void Render(ShopSlot slot, int currentBalance)
+        public void Render(ShopSlot slot, bool canBuy)
         {
             if (slot.IsEmpty)
             {
@@ -37,7 +37,7 @@ namespace Game.UI
 
             _nameLabel.text = slot.Item.ItemName;
             _priceLabel.text = slot.Item.Price.ToString();
-            _buyButton.interactable = currentBalance >= slot.Item.Price;
+            _buyButton.interactable = canBuy;
             _lockButton.interactable = true;
             _lockLabel.text = slot.IsLocked ? LockedText : UnlockedText;
         }

@@ -1,4 +1,5 @@
 using System;
+using Game.Combat;
 using Game.Core;
 using Game.Run;
 using Game.Shop;
@@ -14,6 +15,7 @@ namespace Game.UI
 
         [SerializeField] private GameObject _panel;
         [SerializeField] private ShopSlotView[] _slotViews;
+        [SerializeField] private WeaponSlotView[] _weaponSlotViews;
         [SerializeField] private Button _rerollButton;
         [SerializeField] private Text _rerollLabel;
         [SerializeField] private Text _balanceLabel;
@@ -21,15 +23,22 @@ namespace Game.UI
 
         private ShopSession _session;
         private RunWallet _wallet;
+        private WeaponSellService _weaponSellService;
 
-        public void Init(ShopSession session, RunWallet wallet, Action onContinueClicked)
+        public void Init(ShopSession session, RunWallet wallet, WeaponSellService weaponSellService, Action onContinueClicked)
         {
             _session = session;
             _wallet = wallet;
+            _weaponSellService = weaponSellService;
 
             for (int i = 0; i < _slotViews.Length; i++)
             {
                 _slotViews[i].Init(i, OnBuyClicked, OnLockClicked);
+            }
+
+            for (int i = 0; i < _weaponSlotViews.Length; i++)
+            {
+                _weaponSlotViews[i].Init(i, OnSellClicked);
             }
 
             _rerollButton.onClick.AddListener(OnRerollClicked);
@@ -40,6 +49,7 @@ namespace Game.UI
             GameEvents.Subscribe<RunEndedEvent>(OnRunEnded);
             GameEvents.Subscribe<ShopContentChangedEvent>(OnShopContentChanged);
             GameEvents.Subscribe<CurrencyChangedEvent>(OnCurrencyChanged);
+            GameEvents.Subscribe<WeaponInventoryChangedEvent>(OnWeaponInventoryChanged);
 
             _panel.SetActive(false);
         }
@@ -51,6 +61,7 @@ namespace Game.UI
             GameEvents.Unsubscribe<RunEndedEvent>(OnRunEnded);
             GameEvents.Unsubscribe<ShopContentChangedEvent>(OnShopContentChanged);
             GameEvents.Unsubscribe<CurrencyChangedEvent>(OnCurrencyChanged);
+            GameEvents.Unsubscribe<WeaponInventoryChangedEvent>(OnWeaponInventoryChanged);
         }
 
         private void OnShopOpened(ShopOpenedEvent evt)
@@ -79,6 +90,16 @@ namespace Game.UI
             Refresh();
         }
 
+        private void OnWeaponInventoryChanged(WeaponInventoryChangedEvent evt)
+        {
+            Refresh();
+        }
+
+        private void OnSellClicked(int slotIndex)
+        {
+            _weaponSellService.TrySell(slotIndex);
+        }
+
         private void OnBuyClicked(int slotIndex)
         {
             _session.TryBuy(slotIndex);
@@ -99,12 +120,31 @@ namespace Game.UI
             int balance = _wallet.Balance;
             for (int i = 0; i < _slotViews.Length; i++)
             {
-                _slotViews[i].Render(_session.Slots[i], balance);
+                _slotViews[i].Render(_session.Slots[i], _session.CanBuy(i));
             }
+
+            RenderWeaponSlots();
 
             _rerollLabel.text = string.Format(RerollLabelFormat, _session.RerollCost);
             _rerollButton.interactable = balance >= _session.RerollCost;
             _balanceLabel.text = string.Format(BalanceLabelFormat, balance);
+        }
+
+        private void RenderWeaponSlots()
+        {
+            var weapons = _weaponSellService.Weapons;
+            for (int i = 0; i < _weaponSlotViews.Length; i++)
+            {
+                if (i < weapons.Count)
+                {
+                    WeaponData weaponData = weapons[i].WeaponData;
+                    _weaponSlotViews[i].Render(weaponData, _weaponSellService.GetSellPrice(weaponData));
+                }
+                else
+                {
+                    _weaponSlotViews[i].Render(null, 0);
+                }
+            }
         }
     }
 }

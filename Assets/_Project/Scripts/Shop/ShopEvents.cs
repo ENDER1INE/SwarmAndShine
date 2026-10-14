@@ -13,4 +13,8 @@ namespace Game.Shop
     public readonly struct ShopContentChangedEvent
     {
     }
+
+    public readonly struct WeaponInventoryChangedEvent
+    {
+    }
 }

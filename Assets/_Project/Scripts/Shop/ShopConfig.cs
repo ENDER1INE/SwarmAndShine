@@ -22,12 +22,15 @@ namespace Game.Shop
         [SerializeField] private int _slotCount = 4;
         [SerializeField] private int _rerollBaseCost = 5;
         [SerializeField] private int _rerollCostIncrement = 3;
+        [Range(0f, 1f)]
+        [SerializeField] private float _weaponSellPriceRatio = 0.5f;
         [SerializeField] private List<ShopItemData> _items = new();
         [SerializeField] private List<RarityPoolEntry> _rarityPool = new();
 
         public int SlotCount => _slotCount;
         public int RerollBaseCost => _rerollBaseCost;
         public int RerollCostIncrement => _rerollCostIncrement;
+        public float WeaponSellPriceRatio => _weaponSellPriceRatio;
         public IReadOnlyList<ShopItemData> Items => _items;
         public IReadOnlyList<RarityPoolEntry> RarityPool => _rarityPool;
     }

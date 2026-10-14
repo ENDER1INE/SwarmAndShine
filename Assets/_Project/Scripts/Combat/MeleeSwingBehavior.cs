@@ -20,7 +20,6 @@ namespace Game.Combat
         private float _nextSwingSign = 1f;
         private bool _isAttacking;
         private Vector2 _attackDirection;
-        private int _stackCount = 1;
 
         public MeleeSwingBehavior(
             WeaponData weaponData,
@@ -35,11 +34,10 @@ namespace Game.Combat
         }
 
         public WeaponData WeaponData => _weaponData;
-        public int StackCount => _stackCount;
 
-        public void AddStack()
+        public void Release()
         {
-            _stackCount++;
+            _mount.Release();
         }
 
         public void Tick(float deltaTime)
@@ -83,7 +81,7 @@ namespace Game.Combat
             _previousOffsetDegrees = _startOffsetDegrees;
             _nextSwingSign = -_nextSwingSign;
 
-            _cooldownTimer = WeaponStatCalculator.CalculateCooldown(_weaponData, _stats, _stackCount);
+            _cooldownTimer = WeaponStatCalculator.CalculateCooldown(_weaponData, _stats);
             _mount.PlaySwing(_startOffsetDegrees, _endOffsetDegrees, _weaponData.MeleeAttackDuration);
         }
 
@@ -110,7 +108,7 @@ namespace Game.Combat
 
             Vector2 origin = _mount.Position;
             float reach = _weaponData.Range + _weaponData.MeleeHitWidth * 0.5f;
-            float damage = WeaponStatCalculator.CalculateDamage(_weaponData, _stats, _stackCount);
+            float damage = WeaponStatCalculator.CalculateDamage(_weaponData, _stats);
 
             _targetProvider.FindTargetsInRange(origin, reach, _candidateBuffer);
             for (int i = 0; i < _candidateBuffer.Count; i++)

@@ -17,41 +17,27 @@ namespace Game.Combat
         public IReadOnlyList<IWeaponBehavior> ActiveWeapons => _activeWeapons;
         public bool IsFull => _activeWeapons.Count >= MaxSlots;
 
-        public bool CanAddWeapon(WeaponData weaponData)
-        {
-            return !IsFull || FindByWeaponData(weaponData) != null;
-        }
-
         public bool TryAddWeapon(WeaponData weaponData)
         {
-            IWeaponBehavior existing = FindByWeaponData(weaponData);
-            if (existing != null)
-            {
-                existing.AddStack();
-                return true;
-            }
-
             if (IsFull)
             {
                 return false;
             }
 
-            IWeaponBehavior weapon = _weaponFactory.Create(weaponData);
-            _activeWeapons.Add(weapon);
+            _activeWeapons.Add(_weaponFactory.Create(weaponData));
             return true;
         }
 
-        private IWeaponBehavior FindByWeaponData(WeaponData weaponData)
+        public bool TryRemoveWeaponAt(int slotIndex)
         {
-            foreach (var weapon in _activeWeapons)
+            if (slotIndex < 0 || slotIndex >= _activeWeapons.Count)
             {
-                if (weapon.WeaponData == weaponData)
-                {
-                    return weapon;
-                }
+                return false;
             }
 
-            return null;
+            _activeWeapons[slotIndex].Release();
+            _activeWeapons.RemoveAt(slotIndex);
+            return true;
         }
     }
 }

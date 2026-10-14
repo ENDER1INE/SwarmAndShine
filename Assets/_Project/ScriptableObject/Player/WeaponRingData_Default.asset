@@ -12,6 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fb656bad496fd95489f73f5a7b328b69, type: 3}
   m_Name: WeaponRingData_Default
   m_EditorClassIdentifier: 
-  _centerOffset: {x: 0, y: 0.6}
-  _radius: 0.9
+  _centerOffset: {x: 0.2, y: 0.2}
+  _radius: 1.2
   _startAngleDegrees: 0

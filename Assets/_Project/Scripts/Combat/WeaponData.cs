@@ -27,8 +27,13 @@ namespace Game.Combat
         [SerializeField] private float _baseDamage = 10f;
         [SerializeField] private float _baseAttacksPerSecond = 1f;
         [SerializeField] private float _range = 1f;
-        [SerializeField] private float _duplicateDamageBonusPercent = 0.2f;
-        [SerializeField] private float _duplicateAttackSpeedBonusPercent = 0.1f;
+        [Min(0)]
+        [SerializeField] private int _basePrice = 10;
+
+        [Header("Ranged")]
+        [Min(1)]
+        [SerializeField] private int _projectilesPerShot = 1;
+        [SerializeField] private float _spreadAngleDegrees;
 
         [Header("Melee")]
         [SerializeField] private float _meleeHitWidth = 0.6f;
@@ -50,8 +55,9 @@ namespace Game.Combat
         public float BaseDamage => _baseDamage;
         public float BaseAttacksPerSecond => _baseAttacksPerSecond;
         public float Range => _range;
-        public float DuplicateDamageBonusPercent => _duplicateDamageBonusPercent;
-        public float DuplicateAttackSpeedBonusPercent => _duplicateAttackSpeedBonusPercent;
+        public int BasePrice => _basePrice;
+        public int ProjectilesPerShot => _projectilesPerShot;
+        public float SpreadAngleDegrees => _spreadAngleDegrees;
         public float MeleeHitWidth => _meleeHitWidth;
         public float MeleeAttackDuration => _meleeAttackDuration;
         public float MeleeSwingArcDegrees => _meleeSwingArcDegrees;

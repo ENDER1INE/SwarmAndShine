@@ -18,7 +18,6 @@ namespace Game.Combat
         private bool _isAttacking;
         private bool _hasDealtDamage;
         private Vector2 _attackDirection;
-        private int _stackCount = 1;
 
         public MeleeThrustBehavior(
             WeaponData weaponData,
@@ -33,11 +32,10 @@ namespace Game.Combat
         }
 
         public WeaponData WeaponData => _weaponData;
-        public int StackCount => _stackCount;
 
-        public void AddStack()
+        public void Release()
         {
-            _stackCount++;
+            _mount.Release();
         }
 
         public void Tick(float deltaTime)
@@ -73,7 +71,7 @@ namespace Game.Combat
             _hasDealtDamage = false;
             _attackElapsedTime = 0f;
             _attackDirection = direction;
-            _cooldownTimer = WeaponStatCalculator.CalculateCooldown(_weaponData, _stats, _stackCount);
+            _cooldownTimer = WeaponStatCalculator.CalculateCooldown(_weaponData, _stats);
 
             _mount.PlayThrust(_weaponData.Range, _weaponData.MeleeAttackDuration);
         }
@@ -99,7 +97,7 @@ namespace Game.Combat
 
             Vector2 origin = _mount.Position;
             float halfWidth = _weaponData.MeleeHitWidth * 0.5f;
-            float damage = WeaponStatCalculator.CalculateDamage(_weaponData, _stats, _stackCount);
+            float damage = WeaponStatCalculator.CalculateDamage(_weaponData, _stats);
 
             _targetProvider.FindTargetsInRange(origin, _weaponData.Range + halfWidth, _hitBuffer);
             for (int i = 0; i < _hitBuffer.Count; i++)

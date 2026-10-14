@@ -39,13 +39,15 @@ namespace Game.Tests.EditMode
             public float LastDamage;
             public Vector2 LastOrigin;
             public Vector2 LastDirection;
+            public float LastMaxDistance;
 
-            public void SpawnProjectile(Vector2 origin, Vector2 direction, float damage, ICombatTarget target)
+            public void SpawnProjectile(Vector2 origin, Vector2 direction, float damage, float maxDistance)
             {
                 SpawnCount++;
                 LastDamage = damage;
                 LastOrigin = origin;
                 LastDirection = direction;
+                LastMaxDistance = maxDistance;
             }
         }
 
@@ -66,6 +68,10 @@ namespace Game.Tests.EditMode
             public void ClearAim()
             {
                 ClearAimCount++;
+            }
+
+            public void Release()
+            {
             }
 
             public void PlayThrust(float distance, float duration)
@@ -194,6 +200,23 @@ namespace Game.Tests.EditMode
             weapon.Tick(0.1f); // кулдаун при 1 атаке/сек = 1с, ещё не прошёл
 
             Assert.AreEqual(1, spawner.SpawnCount);
+        }
+
+        [Test]
+        public void Tick_MultipleProjectilesPerShot_SpawnsAllWithFullDamage()
+        {
+            var weaponData = CreateWeaponData(WeaponCategory.Ranged, 3f, 1f, 5f);
+            SetField(weaponData, "_projectilesPerShot", 5);
+            SetField(weaponData, "_spreadAngleDegrees", 40f);
+            var target = new FakeCombatTarget { Position = new Vector2(0f, 3f) };
+            var spawner = new FakeProjectileSpawner();
+            var weapon = new RangedWeaponBehavior(
+                weaponData, CreateStats(), new FakeTargetProvider { TargetToReturn = target }, spawner, new FakeWeaponMount());
+
+            weapon.Tick(1f);
+
+            Assert.AreEqual(5, spawner.SpawnCount);
+            Assert.AreEqual(5f, spawner.LastMaxDistance);
         }
     }
 }

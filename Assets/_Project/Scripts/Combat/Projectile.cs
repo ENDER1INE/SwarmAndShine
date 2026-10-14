@@ -10,32 +10,42 @@ namespace Game.Combat
 
         private Vector2 _direction;
         private float _damage;
-        private ICombatTarget _target;
+        private float _remainingDistance;
+        private ITargetProvider _targetProvider;
         private Action<Projectile> _releaseToPool;
 
-        public void Launch(Vector2 origin, Vector2 direction, float damage, ICombatTarget target, Action<Projectile> releaseToPool)
+        public void Launch(
+            Vector2 origin,
+            Vector2 direction,
+            float damage,
+            float maxDistance,
+            ITargetProvider targetProvider,
+            Action<Projectile> releaseToPool)
         {
             transform.position = origin;
             _direction = direction;
             _damage = damage;
-            _target = target;
+            _remainingDistance = maxDistance;
+            _targetProvider = targetProvider;
             _releaseToPool = releaseToPool;
         }
 
         private void Update()
         {
-            if (_target == null || !_target.IsAlive)
+            float stepDistance = _speed * Time.deltaTime;
+            transform.Translate(_direction * stepDistance, Space.World);
+            _remainingDistance -= stepDistance;
+
+            ICombatTarget hitTarget = _targetProvider.FindNearestTarget(transform.position, _hitDistance);
+            if (hitTarget != null)
             {
+                hitTarget.TakeDamage(_damage);
                 Release();
                 return;
             }
 
-            transform.Translate(_direction * (_speed * Time.deltaTime), Space.World);
-
-            float distance = Vector2.Distance(transform.position, _target.Position);
-            if (distance <= _hitDistance)
+            if (_remainingDistance <= 0f)
             {
-                _target.TakeDamage(_damage);
                 Release();
             }
         }

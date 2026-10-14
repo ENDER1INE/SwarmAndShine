@@ -20,11 +20,14 @@ MonoBehaviour:
   _range: 6
   _duplicateDamageBonusPercent: 0.2
   _duplicateAttackSpeedBonusPercent: 0.1
+  _projectilesPerShot: 1
+  _spreadAngleDegrees: 0
   _meleeHitWidth: 0.6
-  _meleeThrustDuration: 0.16
-  _worldSprite: {fileID: 21300000, guid: 04eda1cf45c4803499710dfff0cee59e, type: 3}
-  _worldScale: {x: 0.35, y: 0.1}
-  _worldTint: {r: 1, g: 0.85, b: 0.2, a: 1}
+  _meleeAttackDuration: 0.16
+  _meleeSwingArcDegrees: 110
+  _worldSprite: {fileID: 21300000, guid: 6d7e2eb2dcf66c54c89bea3ab3605624, type: 3}
+  _worldScale: {x: 0.28, y: 0.28}
+  _worldTint: {r: 1, g: 1, b: 1, a: 1}
   _worldSpriteRotationDegrees: 0
-  _worldSpriteOffset: {x: 0, y: 0}
-  _muzzleOffset: {x: 0.18, y: 0}
+  _worldSpriteOffset: {x: 0.53675, y: 0}
+  _muzzleOffset: {x: 0.92350006, y: 0}

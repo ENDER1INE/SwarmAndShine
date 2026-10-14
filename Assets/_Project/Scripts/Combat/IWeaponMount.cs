@@ -11,5 +11,6 @@ namespace Game.Combat
         void ClearAim();
         void PlayThrust(float distance, float duration);
         void PlaySwing(float startOffsetDegrees, float endOffsetDegrees, float duration);
+        void Release();
     }
 }

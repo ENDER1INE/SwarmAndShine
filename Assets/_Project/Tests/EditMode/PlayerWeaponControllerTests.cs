@@ -12,12 +12,11 @@ namespace Game.Tests.EditMode
         private class CountingWeaponBehavior : IWeaponBehavior
         {
             public WeaponData WeaponData => null;
-            public int StackCount => 1;
             public int TickCount;
 
             public void Tick(float deltaTime) => TickCount++;
 
-            public void AddStack()
+            public void Release()
             {
             }
         }

@@ -20,9 +20,17 @@ namespace Game.Player
         {
             WeaponMountView mount = Instantiate(_mountPrefab, transform);
             mount.Configure(weaponData);
+            mount.Released += OnMountReleased;
             _mounts.Add(mount);
             Relayout();
             return mount;
+        }
+
+        private void OnMountReleased(WeaponMountView mount)
+        {
+            mount.Released -= OnMountReleased;
+            _mounts.Remove(mount);
+            Relayout();
         }
 
         private void Relayout()

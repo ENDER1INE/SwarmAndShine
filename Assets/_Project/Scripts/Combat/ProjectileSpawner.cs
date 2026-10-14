@@ -9,16 +9,22 @@ namespace Game.Combat
         [SerializeField] private int _initialPoolSize = 10;
 
         private ObjectPool<Projectile> _pool;
+        private ITargetProvider _targetProvider;
 
         private void Awake()
         {
             _pool = new ObjectPool<Projectile>(_projectilePrefab, _initialPoolSize, transform);
         }
 
-        public void SpawnProjectile(Vector2 origin, Vector2 direction, float damage, ICombatTarget target)
+        public void Init(ITargetProvider targetProvider)
+        {
+            _targetProvider = targetProvider;
+        }
+
+        public void SpawnProjectile(Vector2 origin, Vector2 direction, float damage, float maxDistance)
         {
             Projectile projectile = _pool.Get();
-            projectile.Launch(origin, direction, damage, target, ReleaseProjectile);
+            projectile.Launch(origin, direction, damage, maxDistance, _targetProvider, ReleaseProjectile);
         }
 
         private void ReleaseProjectile(Projectile projectile)

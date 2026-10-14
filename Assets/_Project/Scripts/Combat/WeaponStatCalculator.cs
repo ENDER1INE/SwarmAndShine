@@ -2,23 +2,18 @@ namespace Game.Combat
 {
     public static class WeaponStatCalculator
     {
-        public static float CalculateDamage(WeaponData weaponData, CharacterStats stats, int stackCount)
+        public static float CalculateDamage(WeaponData weaponData, CharacterStats stats)
         {
             float damagePercent = weaponData.Category == WeaponCategory.Melee
                 ? stats.MeleeDamagePercent
                 : stats.RangedDamagePercent;
 
-            float duplicateBonus = weaponData.DuplicateDamageBonusPercent * (stackCount - 1);
-
-            return weaponData.BaseDamage * (1f + damagePercent) * (1f + duplicateBonus);
+            return weaponData.BaseDamage * (1f + damagePercent);
         }
 
-        public static float CalculateCooldown(WeaponData weaponData, CharacterStats stats, int stackCount)
+        public static float CalculateCooldown(WeaponData weaponData, CharacterStats stats)
         {
-            float duplicateAttackSpeedBonus = weaponData.DuplicateAttackSpeedBonusPercent * (stackCount - 1);
-            float effectiveAttacksPerSecond = weaponData.BaseAttacksPerSecond
-                * (1f + stats.AttackSpeedPercent)
-                * (1f + duplicateAttackSpeedBonus);
+            float effectiveAttacksPerSecond = weaponData.BaseAttacksPerSecond * (1f + stats.AttackSpeedPercent);
 
             return 1f / effectiveAttacksPerSecond;
         }

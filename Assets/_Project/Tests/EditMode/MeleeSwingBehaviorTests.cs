@@ -77,6 +77,10 @@ namespace Game.Tests.EditMode
                 ClearAimCount++;
             }
 
+            public void Release()
+            {
+            }
+
             public void PlayThrust(float distance, float duration)
             {
             }

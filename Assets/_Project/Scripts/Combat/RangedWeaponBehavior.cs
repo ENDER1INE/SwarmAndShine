@@ -11,7 +11,6 @@ namespace Game.Combat
         private readonly IWeaponMount _mount;
 
         private float _cooldownTimer;
-        private int _stackCount = 1;
 
         public RangedWeaponBehavior(
             WeaponData weaponData,
@@ -28,11 +27,10 @@ namespace Game.Combat
         }
 
         public WeaponData WeaponData => _weaponData;
-        public int StackCount => _stackCount;
 
-        public void AddStack()
+        public void Release()
         {
-            _stackCount++;
+            _mount.Release();
         }
 
         public void Tick(float deltaTime)
@@ -53,11 +51,17 @@ namespace Game.Combat
             }
 
             Vector2 muzzlePosition = _mount.MuzzlePosition;
-            Vector2 shotDirection = (target.Position - muzzlePosition).normalized;
-            float damage = WeaponStatCalculator.CalculateDamage(_weaponData, _stats, _stackCount);
-            _projectileSpawner.SpawnProjectile(muzzlePosition, shotDirection, damage, target);
+            Vector2 aimDirection = (target.Position - muzzlePosition).normalized;
+            float damage = WeaponStatCalculator.CalculateDamage(_weaponData, _stats);
+            int projectileCount = _weaponData.ProjectilesPerShot;
+            for (int projectileIndex = 0; projectileIndex < projectileCount; projectileIndex++)
+            {
+                Vector2 shotDirection = ProjectileSpread.GetDirection(
+                    aimDirection, projectileIndex, projectileCount, _weaponData.SpreadAngleDegrees);
+                _projectileSpawner.SpawnProjectile(muzzlePosition, shotDirection, damage, _weaponData.Range);
+            }
 
-            _cooldownTimer = WeaponStatCalculator.CalculateCooldown(_weaponData, _stats, _stackCount);
+            _cooldownTimer = WeaponStatCalculator.CalculateCooldown(_weaponData, _stats);
         }
     }
 }

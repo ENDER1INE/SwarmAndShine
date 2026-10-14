@@ -1,3 +1,4 @@
+using System;
 using Game.Combat;
 using UnityEngine;
 
@@ -25,6 +26,8 @@ namespace Game.Player
         private float _swingStartDegrees;
         private float _swingEndDegrees;
         private bool _isAiming;
+
+        public event Action<WeaponMountView> Released;
 
         public Vector2 Position => transform.position;
         public Vector2 MuzzlePosition => _muzzle.position;
@@ -110,6 +113,12 @@ namespace Game.Player
             _swingStartDegrees = startOffsetDegrees;
             _swingEndDegrees = endOffsetDegrees;
             _visual.localRotation = Quaternion.Euler(0f, 0f, startOffsetDegrees);
+        }
+
+        public void Release()
+        {
+            Released?.Invoke(this);
+            Destroy(gameObject);
         }
 
         private void StartAnimation(AttackAnimation animation, float duration)

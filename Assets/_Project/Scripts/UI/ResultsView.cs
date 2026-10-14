@@ -16,10 +16,12 @@ namespace Game.UI
         [SerializeField] private Text _titleLabel;
         [SerializeField] private Text _wavesLabel;
         [SerializeField] private Button _restartButton;
+        [SerializeField] private Button _menuButton;
 
-        public void Init(Action onRestartClicked)
+        public void Init(Action onRestartClicked, Action onMenuClicked)
         {
             _restartButton.onClick.AddListener(() => onRestartClicked());
+            _menuButton.onClick.AddListener(() => onMenuClicked());
             GameEvents.Subscribe<RunEndedEvent>(OnRunEnded);
             _panel.SetActive(false);
         }

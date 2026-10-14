@@ -1,5 +1,4 @@
 using Game.CameraControl;
-using System.IO;
 using Game.Combat;
 using Game.Meta;
 using Game.Player;
@@ -8,27 +7,26 @@ using Game.Shop;
 using Game.Spawning;
 using Game.UI;
 using Game.World;
+using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Serialization;
 using UnityEngine.SceneManagement;
 
 namespace Game.Core
 {
     public class GameBootstrap : MonoBehaviour
     {
-        private const string SaveFileName = "save.json";
-
-        [SerializeField] private CharacterBaseStatsData _characterBaseStatsData;
+        [SerializeField] private string _mainMenuSceneName = "MainMenu";
+        [SerializeField] private CharacterCatalog _characterCatalog;
         [SerializeField] private PlayerMovement _playerMovement;
+        [SerializeField] private CharacterAnimator _playerAnimator;
         [SerializeField] private PlayerWeaponController _playerWeaponController;
         [SerializeField] private PlayerWeaponRing _playerWeaponRing;
         [SerializeField] private ProjectileSpawner _projectileSpawner;
-        [FormerlySerializedAs("_testWeaponData")]
-        [SerializeField] private WeaponData _startingWeaponData;
         [SerializeField] private EnemySpawner _enemySpawner;
         [SerializeField] private RunConfig _runConfig;
         [SerializeField] private ShopConfig _shopConfig;
         [SerializeField] private RunRewardConfig _runRewardConfig;
+        [SerializeField] private MetaUpgradeCatalog _metaUpgradeCatalog;
         [SerializeField] private ShopView _shopView;
         [SerializeField] private ResultsView _resultsView;
         [SerializeField] private HudView _hudView;
@@ -37,7 +35,11 @@ namespace Game.Core
         [SerializeField] private TiledFloorView _tiledFloorView;
         [SerializeField] private CameraRigController _cameraRig;
 
-        private SaveData _saveData;
+        [Header("Debug")]
+        [Tooltip("Weapons granted at run start in the Editor and development builds. Leave empty for normal play.")]
+        [SerializeField] private List<WeaponData> _debugStartingWeapons = new();
+
+        private MetaServices _metaServices;
         private RunStatsTracker _runStatsTracker;
         private RunRewardService _runRewardService;
         private CharacterStats _characterStats;
@@ -54,23 +56,35 @@ namespace Game.Core
             _runFlow?.Dispose();
             _shopSession?.Dispose();
             _runRewardService?.Dispose();
+            _metaServices?.Dispose();
             _runStatsTracker?.Dispose();
         }
 
         private void Awake()
         {
-            ISaveStorage saveStorage = new JsonFileSaveStorage(Path.Combine(Application.persistentDataPath, SaveFileName));
-            _saveData = saveStorage.Load();
+            _metaServices = MetaServices.CreateDefault(_characterCatalog.Characters);
             _runStatsTracker = new RunStatsTracker();
             _runRewardService = new RunRewardService(
                 new RunRewardCalculator(_runRewardConfig.ToRates()),
                 _runStatsTracker,
-                new MetaWallet(_saveData),
-                _saveData,
-                saveStorage);
+                _metaServices.Wallet,
+                _metaServices.SaveData,
+                _metaServices.Storage);
+            CharacterData selectedCharacter = _metaServices.CharacterSelection.GetSelected();
+
+            if (selectedCharacter.AnimatorController != null)
+            {
+                _playerAnimator.SetController(selectedCharacter.AnimatorController);
+            }
 
             _runWallet = new RunWallet();
-            _characterStats = new CharacterStats(_characterBaseStatsData);
+            _characterStats = new CharacterStats(selectedCharacter.BaseStats);
+            foreach (StatModifierData modifierData in selectedCharacter.StartModifiers)
+            {
+                _characterStats.AddModifier(modifierData.ToModifier(selectedCharacter));
+            }
+
+            new MetaStatApplier(_metaServices.SaveData, _metaUpgradeCatalog.Upgrades).Apply(_characterStats);
             _playerHealth = new PlayerHealth(_characterStats);
             _combatTargetRegistry = new CombatTargetRegistry();
 
@@ -91,6 +105,7 @@ namespace Game.Core
             _cameraRig.Init(() => _playerMovement.transform.position, arenaBounds);
 
             ITargetProvider targetProvider = new RegistryTargetProvider(_combatTargetRegistry);
+            _projectileSpawner.Init(targetProvider);
             var weaponFactory = new WeaponBehaviorFactory(
                 _characterStats,
                 targetProvider,
@@ -98,7 +113,8 @@ namespace Game.Core
                 _playerWeaponRing);
 
             _weaponSlotManager = new WeaponSlotManager(weaponFactory);
-            _weaponSlotManager.TryAddWeapon(_startingWeaponData);
+            _weaponSlotManager.TryAddWeapon(selectedCharacter.StartingWeapon);
+            GrantDebugStartingWeapons();
 
             _playerWeaponController.Init(_weaponSlotManager.ActiveWeapons, () => _runFlow.IsWaveActive);
 
@@ -109,15 +125,30 @@ namespace Game.Core
             _shopSession = new ShopSession(_shopConfig, shopSlotGenerator, _runWallet, _weaponSlotManager, _characterStats);
 
             _runFlow = new RunFlow(_runConfig.Waves, _enemySpawner, _runConfig.DefeatFallbackDelay);
-            _shopView.Init(_shopSession, _runWallet, _runFlow.ContinueFromShop);
-            _resultsView.Init(RestartRun);
+            var weaponSellService = new WeaponSellService(_weaponSlotManager, _runWallet, _shopConfig.WeaponSellPriceRatio);
+            _shopView.Init(_shopSession, _runWallet, weaponSellService, _runFlow.ContinueFromShop);
+            _resultsView.Init(RestartRun, LoadMainMenu);
             _hudView.Init(_playerHealth, _runWallet, _runConfig.Waves.Count, () => _runFlow.RemainingWaveTime);
             _runFlow.Start();
+        }
+
+        [System.Diagnostics.Conditional("UNITY_EDITOR"), System.Diagnostics.Conditional("DEVELOPMENT_BUILD")]
+        private void GrantDebugStartingWeapons()
+        {
+            foreach (WeaponData weaponData in _debugStartingWeapons)
+            {
+                _weaponSlotManager.TryAddWeapon(weaponData);
+            }
         }
 
         private void RestartRun()
         {
             SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+        }
+
+        private void LoadMainMenu()
+        {
+            SceneManager.LoadScene(_mainMenuSceneName);
         }
 
         private void Update()

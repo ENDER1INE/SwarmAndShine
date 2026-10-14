@@ -21,6 +21,12 @@ namespace Game.Core
             _spriteRenderer = GetComponent<SpriteRenderer>();
         }
 
+        public void SetController(RuntimeAnimatorController controller)
+        {
+            // Called from a bootstrap that may run before this component's Awake.
+            GetComponent<Animator>().runtimeAnimatorController = controller;
+        }
+
         public void SetMoving(bool isMoving)
         {
             _animator.SetBool(IsMovingHash, isMoving);

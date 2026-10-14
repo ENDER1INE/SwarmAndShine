@@ -13,8 +13,15 @@ namespace Game.Meta
         [SerializeField] private int _metaCurrency;
         [SerializeField] private List<UpgradeLevelEntry> _upgradeLevels = new();
         [SerializeField] private List<string> _unlockedCharacterIds = new();
+        [SerializeField] private string _selectedCharacterId;
 
         public int Version => _version;
+
+        public string SelectedCharacterId
+        {
+            get => _selectedCharacterId;
+            set => _selectedCharacterId = value;
+        }
 
         public int MetaCurrency
         {
